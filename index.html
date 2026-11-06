@@ -1,1 +1,96 @@
-
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>MileMark</title>
+<style>
+  :root { --bg: #05070d; --card: rgba(18, 24, 38, 0.72); --border: rgba(255,255,255,0.08); --accent: #3b82f6; --text: #f1f5f9; --muted: #8b9bb4; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, system-ui, sans-serif; background: var(--bg); color: var(--text); max-width: 420px; margin: 0 auto; min-height: 100vh; position: relative; }
+  .map { position: absolute; inset: 0; background: radial-gradient(ellipse 80% 50% at 50% 0%, rgba(59,130,246,0.18) 0%, transparent 50%), linear-gradient(180deg, #0c1220 0%, #05070d 100%); z-index: 0; }
+  header { position: relative; z-index: 10; padding: 1.4rem 1.2rem 0.8rem; display: flex; justify-content: space-between; align-items: center; }
+  .logo { font-size: 1.35rem; font-weight: 650; } .logo span { color: #60a5fa; }
+  .live { display: flex; align-items: center; gap: 6px; font-size: 0.75rem; color: var(--muted); background: rgba(16,185,129,0.12); padding: 4px 10px; border-radius: 999px; }
+  .dot { width: 7px; height: 7px; background: #10b981; border-radius: 50%; }
+  .wrap { position: relative; z-index: 5; padding: 0.4rem 1rem 2rem; }
+  .tabs { display: flex; background: rgba(255,255,255,0.04); border-radius: 14px; padding: 4px; margin-bottom: 1.1rem; }
+  .tabs button { flex: 1; padding: 0.65rem; background: transparent; border: none; color: var(--muted); font-size: 0.82rem; border-radius: 10px; }
+  .tabs button.active { background: rgba(255,255,255,0.1); color: white; }
+  .card { background: var(--card); backdrop-filter: blur(24px); border: 1px solid var(--border); border-radius: 22px; padding: 1.25rem; margin-bottom: 0.9rem; }
+  .btn { width: 100%; padding: 1.15rem; border: none; border-radius: 14px; font-size: 1.02rem; font-weight: 600; margin: 0.4rem 0; }
+  .btn-primary { background: var(--accent); color: white; }
+  .btn-ghost { background: rgba(255,255,255,0.06); color: white; }
+  .screen { display: none; } .screen.on { display: block; }
+  input, select, textarea { width: 100%; padding: 0.9rem 1rem; margin: 0.3rem 0 0.85rem; background: rgba(255,255,255,0.05); color: white; border: 1px solid var(--border); border-radius: 12px; font-size: 1rem; }
+  label { font-size: 0.75rem; color: var(--muted); }
+  .row { display: flex; justify-content: space-between; align-items: center; padding: 0.85rem 0; border-bottom: 1px solid var(--border); }
+  .row:last-child { border: none; }
+  .tag { font-size: 0.7rem; padding: 3px 8px; border-radius: 999px; }
+  .tag.w { background: rgba(245,158,11,0.15); color: #fbbf24; }
+  .tag.i { background: rgba(59,130,246,0.15); color: #60a5fa; }
+  .ok { background: rgba(16,185,129,0.1); border: 1px solid rgba(16,185,129,0.2); padding: 1rem; border-radius: 14px; text-align: center; margin-top: 0.6rem; }
+</style>
+</head>
+<body>
+<div class="map"></div>
+<header>
+  <div class="logo">Mile<span>Mark</span></div>
+  <div class="live"><div class="dot"></div>Unit 101</div>
+</header>
+<div class="wrap">
+  <div class="tabs">
+    <button class="active" onclick="show('home')">Home</button>
+    <button onclick="show('submit')">Submit</button>
+    <button onclick="show('docs')">Docs</button>
+  </div>
+  <div id="home" class="screen on">
+    <div class="card">
+      <button class="btn btn-primary" onclick="show('submit')">📷 Submit Document</button>
+      <button class="btn btn-ghost">📍 Trip Status</button>
+    </div>
+    <div class="card">
+      <div class="row"><span>Q4 IFTA receipts</span><span class="tag w">2 missing</span></div>
+      <div class="row"><span>Ticket #8821</span><span class="tag i">Draft ready</span></div>
+    </div>
+  </div>
+  <div id="submit" class="screen">
+    <div class="card">
+      <div style="font-weight:600; margin-bottom:0.8rem;">Submit Document</div>
+      <label>TYPE</label>
+      <select id="docType"><option>Fuel Receipt</option><option>Scale Ticket</option><option>Traffic Ticket</option><option>Maintenance Invoice</option><option>Other</option></select>
+      <label>NOTES</label>
+      <textarea id="notes" rows="2" placeholder="State, gallons, amount..."></textarea>
+      <label>PHOTO</label>
+      <input type="file" accept="image/*,.pdf" capture="environment" id="fileInput">
+      <button class="btn btn-primary" onclick="submitDoc()">Upload</button>
+      <div id="result"></div>
+    </div>
+  </div>
+  <div id="docs" class="screen">
+    <div class="card">
+      <div class="row"><span>Fuel receipt · Ohio</span><span style="color:var(--muted); font-size:0.8rem;">Today</span></div>
+      <div class="row"><span>Scale ticket · Indiana</span><span style="color:var(--muted); font-size:0.8rem;">Yesterday</span></div>
+      <div class="row"><span>Maintenance · Tires</span><span style="color:var(--muted); font-size:0.8rem;">Nov 4</span></div>
+    </div>
+  </div>
+</div>
+<script>
+function show(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('on'));
+  document.getElementById(id).classList.add('on');
+  document.querySelectorAll('.tabs button').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+}
+function submitDoc() {
+  const type = document.getElementById('docType').value;
+  const file = document.getElementById('fileInput').files[0];
+  const result = document.getElementById('result');
+  if (!file) { result.innerHTML = '<div class="ok" style="background:rgba(239,68,68,0.1); border-color:rgba(239,68,68,0.2);">Please add a photo first.</div>'; return; }
+  result.innerHTML = '<div class="ok">✓ ' + type + ' submitted</div>';
+  document.getElementById('fileInput').value = '';
+  document.getElementById('notes').value = '';
+}
+</script>
+</body>
+</html>
