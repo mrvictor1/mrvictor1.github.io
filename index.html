@@ -2,28 +2,102 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>MileMark</title>
 <style>
-  body { font-family: -apple-system, system-ui, sans-serif; background: #0f172a; color: #f8fafc; margin: 0; padding: 16px; max-width: 420px; margin: 0 auto; }
-  h1 { font-size: 1.4rem; margin: 0 0 4px; }
-  .sub { color: #94a3b8; font-size: 0.85rem; margin-bottom: 16px; }
-  .tabs { display: flex; gap: 8px; margin-bottom: 16px; }
-  .tabs button { flex: 1; padding: 10px; background: #1e293b; border: none; color: #cbd5e1; border-radius: 10px; }
-  .tabs button.active { background: #3b82f6; color: white; }
-  .card { background: #1e293b; border-radius: 16px; padding: 16px; margin-bottom: 12px; }
-  .btn { width: 100%; padding: 14px; background: #3b82f6; color: white; border: none; border-radius: 12px; font-size: 1rem; margin: 6px 0; }
-  .btn.ghost { background: #334155; }
+  :root {
+    --bg: #000000;
+    --card: #1c1c1e;
+    --border: rgba(255,255,255,0.08);
+    --accent: #0a84ff;
+    --text: #ffffff;
+    --muted: #8e8e93;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    max-width: 420px;
+    margin: 0 auto;
+    min-height: 100vh;
+    padding: 20px 16px 40px;
+  }
+  header { margin-bottom: 24px; }
+  .logo { font-size: 1.6rem; font-weight: 700; letter-spacing: -0.5px; }
+  .logo span { color: var(--accent); }
+  .sub { color: var(--muted); font-size: 0.85rem; margin-top: 4px; }
+  .tabs {
+    display: flex;
+    background: #2c2c2e;
+    border-radius: 12px;
+    padding: 4px;
+    margin-bottom: 20px;
+  }
+  .tabs button {
+    flex: 1;
+    padding: 10px;
+    background: transparent;
+    border: none;
+    color: var(--muted);
+    font-size: 0.9rem;
+    font-weight: 500;
+    border-radius: 10px;
+  }
+  .tabs button.active { background: #3a3a3c; color: white; }
+  .card {
+    background: var(--card);
+    border-radius: 16px;
+    padding: 16px;
+    margin-bottom: 12px;
+    border: 1px solid var(--border);
+  }
+  .btn {
+    width: 100%;
+    padding: 16px;
+    background: var(--accent);
+    color: white;
+    border: none;
+    border-radius: 14px;
+    font-size: 1.05rem;
+    font-weight: 600;
+    margin: 6px 0;
+  }
+  .btn:active { opacity: 0.85; }
+  .btn.ghost { background: #2c2c2e; color: white; }
   .screen { display: none; }
   .screen.on { display: block; }
-  input, select, textarea { width: 100%; padding: 12px; margin: 6px 0 12px; background: #0f172a; color: white; border: 1px solid #475569; border-radius: 10px; box-sizing: border-box; }
-  .row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #334155; }
+  input, select, textarea {
+    width: 100%;
+    padding: 14px 16px;
+    margin: 6px 0 14px;
+    background: #2c2c2e;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 1rem;
+  }
+  label { font-size: 0.8rem; color: var(--muted); font-weight: 500; }
+  .row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 1rem;
+  }
   .row:last-child { border: none; }
+  .badge { font-size: 0.75rem; padding: 4px 10px; border-radius: 999px; font-weight: 500; }
+  .badge.warn { background: rgba(255,159,10,0.2); color: #ff9f0a; }
+  .badge.info { background: rgba(10,132,255,0.2); color: #0a84ff; }
+  .ok { text-align: center; padding: 16px; color: #30d158; font-weight: 500; }
 </style>
 </head>
 <body>
-<h1>MileMark</h1>
-<div class="sub">Unit 101 · Alex Rivera</div>
+<header>
+  <div class="logo">Mile<span>Mark</span></div>
+  <div class="sub">Unit 101 · Alex Rivera</div>
+</header>
 
 <div class="tabs">
   <button class="active" onclick="show('home')">Home</button>
@@ -37,19 +111,25 @@
     <button class="btn ghost">📍 Trip Status</button>
   </div>
   <div class="card">
-    <div class="row"><span>Q4 IFTA receipts</span><span>2 missing</span></div>
-    <div class="row"><span>Ticket #8821</span><span>Draft ready</span></div>
+    <div class="row"><span>Q4 IFTA receipts</span><span class="badge warn">2 missing</span></div>
+    <div class="row"><span>Ticket #8821</span><span class="badge info">Draft ready</span></div>
   </div>
 </div>
 
 <div id="submit" class="screen">
   <div class="card">
-    <strong>Submit Document</strong><br><br>
-    <label>Type</label>
-    <select id="docType"><option>Fuel Receipt</option><option>Scale Ticket</option><option>Traffic Ticket</option><option>Maintenance Invoice</option><option>Other</option></select>
-    <label>Notes</label>
-    <textarea id="notes" rows="2"></textarea>
-    <label>Photo</label>
+    <div style="font-weight:600; margin-bottom:12px;">Submit Document</div>
+    <label>TYPE</label>
+    <select id="docType">
+      <option>Fuel Receipt</option>
+      <option>Scale Ticket</option>
+      <option>Traffic Ticket</option>
+      <option>Maintenance Invoice</option>
+      <option>Other</option>
+    </select>
+    <label>NOTES</label>
+    <textarea id="notes" rows="2" placeholder="State, gallons, amount..."></textarea>
+    <label>PHOTO</label>
     <input type="file" accept="image/*" capture="environment" id="fileInput">
     <button class="btn" onclick="submitDoc()">Upload</button>
     <div id="result"></div>
@@ -58,9 +138,9 @@
 
 <div id="docs" class="screen">
   <div class="card">
-    <div class="row"><span>Fuel receipt · Ohio</span><span>Today</span></div>
-    <div class="row"><span>Scale ticket · Indiana</span><span>Yesterday</span></div>
-    <div class="row"><span>Maintenance · Tires</span><span>Nov 4</span></div>
+    <div class="row"><span>Fuel receipt · Ohio</span><span style="color:var(--muted); font-size:0.85rem;">Today</span></div>
+    <div class="row"><span>Scale ticket · Indiana</span><span style="color:var(--muted); font-size:0.85rem;">Yesterday</span></div>
+    <div class="row"><span>Maintenance · Tires</span><span style="color:var(--muted); font-size:0.85rem;">Nov 4</span></div>
   </div>
 </div>
 
@@ -75,9 +155,13 @@ function submitDoc() {
   const type = document.getElementById('docType').value;
   const file = document.getElementById('fileInput').files[0];
   const result = document.getElementById('result');
-  if (!file) { result.innerHTML = '<p style="color:#f87171">Please add a photo first.</p>'; return; }
-  result.innerHTML = '<p style="color:#4ade80">✓ ' + type + ' submitted</p>';
+  if (!file) {
+    result.innerHTML = '<div class="ok" style="color:#ff453a;">Please add a photo first.</div>';
+    return;
+  }
+  result.innerHTML = '<div class="ok">✓ ' + type + ' submitted</div>';
   document.getElementById('fileInput').value = '';
+  document.getElementById('notes').value = '';
 }
 </script>
 </body>
